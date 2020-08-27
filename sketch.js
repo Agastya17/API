@@ -7,11 +7,13 @@ var engine, world;
 var box1, pig1,pig3;
 var backgroundImg,platform;
 var bird, slingshot;
+var bg = "sprites/bg.png";
+var score = 0;
 
 var gameState = "onSling";
 
 function preload() {
-    backgroundImg = loadImage("sprites/bg.png");
+    getBackground();
 }
 
 function setup(){
@@ -42,10 +44,20 @@ function setup(){
 
     //log6 = new Log(230,180,80, PI/2);
     slingshot = new SlingShot(bird.body,{x:200, y:50});
+
+    //console.log(box1.body);
+    //getBackground();
 }
 
 function draw(){
-    background(backgroundImg);
+    if(backgroundImg){
+        background(backgroundImg);
+    }
+
+    fill("white");
+    textSize(32);
+    text("Score: " + score, width - 300, 50);
+    
     Engine.update(engine);
     //strokeWeight(4);
     box1.display();
@@ -62,6 +74,9 @@ function draw(){
     box5.display();
     log4.display();
     log5.display();
+
+    pig1.Score();
+    pig3.Score();
 
     bird.display();
     platform.display();
@@ -86,3 +101,42 @@ function keyPressed(){
        // slingshot.attach(bird.body);
     }
 }
+
+async function getBackground(){
+    var response = await fetch("http://worldtimeapi.org/api/timezone/America/New_York");
+    var responseJSON = await response.json(); //to extranct the information in JSON so that the computer can understand
+    var dt = responseJSON.datetime;
+    //console.log(dt);
+
+    var hour = dt.slice(11, 13);
+    //console.log(hour);
+
+    if(hour >= 06 && hour <= 19){
+        bg = "sprites/bg.png";
+    }
+    else{
+        bg = "sprites/bg2.jpg";
+    }
+
+    backgroundImg = loadImage(bg);
+}
+
+/*
+API calls
+(Application Program Interface)
+
+Websites
+-promise of information
+- Different web servers provide different types of API calls 
+-fetch() - sends a request to the API service and collects the response
+
+JSON - data structure
+- JavaScript Object Notation
+- created inside {..}
+- Elements have index names
+- Different elements are separated by a comma
+{Index_name: Index_value}
+
+-Synchronous functions - JS executes one line after the other without wait
+-asynchronous functions - It will wait for every line to be completed before jumping to the next one
+*/
